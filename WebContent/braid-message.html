@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Braid Message</title>
+		<link rel="stylesheet" type="text/css" href="braid-protocol.css">
+	</head>
+	<body>
+		<h1>Braid Messages</h1>
+		<p>All messages exchanged in braid have the same basic structure.  
+		They are JSON-encoded objects using UTF-8 character encoding and 
+		they have this structure:
+		<pre>
+{
+   id: <span class='variable'>id</span>,
+   to: <span class='variable'>recipients</span>,
+   from: <span class='variable'>sender</span>,
+   type: <span class='variable'>{cast | request | reply | error}</span>,
+   request:  <span class='variable'>request type</span>,
+   code: <span class='variable'>HTTP-style error code</span>,
+   message: <span class='variable'>HTTP-style error message</span>,
+   data: <span class='variable'>request-specific object</span>
+}</pre>
+		<p>Not all of these fields necessarily appear in every message.</p>
+		
+		<p>Here is an example of a ping request and corresponding response:<p>
+		<pre>
+{
+   id: 5,
+   to: [{
+      user: 'bob',
+      domain: 'example.org'
+   }],
+   from: {
+      user: 'joe',
+      domain: 'example.org'
+   },
+   type: 'request',
+   request: 'ping'
+}
+
+{
+   id: 5,
+   to: [{
+      user: 'joe',
+      domain: 'example.org'
+   }],
+   from: {
+      user: 'bob',
+      domain: 'example.org'
+   },
+   type: 'reply',
+   request: 'ping'
+}</pre>
+		
+		
+		<h3>id</h3>
+		<p>This field, if present, contains a number used by a message sender to associate a reply
+		or error message received with the original message that was sent.  This field does not appear
+		in messages whose <span class='fieldName'>type</span> is <span class='fieldValue'>cast</span>.</p>
+		<p>The sender can use any numbering scheme it chooses.  Those sending replies or errors copy the
+		<span class='fieldName'>id</span> from the request into their response message.
+		
+		<h3>to</h3>
+		<p>This field determines who the message will be delivered to.  If absent,
+		the message is intended for the entity directly receiving it.  For example, a client sending a message
+		to its domain server omits this field for messages intended for the server.<p>
+		<p>The field contains an array of address objects.  A server receiving a message with multiple recipients
+		is responsible for delivering one copy to each recipient within that domain, and one copy to each distinct
+		external domain referenced.  For more about addressing, see <a href='braid-addresses.html'>Braid Addresses</a>.
+		
+		<h3>from</h3>
+		<p>This field identifies who originated the message.  A client sending a message never includes this
+		field, as its server will always populate it to ensure identity integrity.  For more about addressing, see 
+		<a href='braid-addresses.html'>Braid Addresses</a>.</p>
+		
+		<h3>type</h3>
+		<p>This field is mandatory and must contain one of the following strings:</p>
+		<div class='enumList'>
+			<div><div class='enumHeading'>cast</div>  Messages that are sent when no response is expected</div>
+			<div><div class='enumHeading'>request</div>  Messages for which a response is expected</div>
+			<div><div class='enumHeading'>reply</div>  A positive response to a <span class='fieldValue'>request</span> message</div>
+			<div><div class='enumHeading'>cast</div>  Messages that are sent when no response is expected</div>
+		</div>
+		
+		<h3>request</h3>
+		<p>This field is mandatory and describes the primary intention of the message.  For <span class='fieldValue'>reply</span> 
+		and <span class='fieldValue'>error</span> messages it is copied from the corresponding 
+		<span class='fieldValue'>request</span> message.</p>
+		<p>Braid defines a core set of request types but the protocol is extensible.  Servers are required to
+		deliver messages even if the server does not recognize the value in the <span class='fieldValue'>request</span>
+		field.  To avoid naming collisions, except for standard requests (see <a href='braid-addresses.html'>Braid Requests</a>)
+		all requests must be expressed as a URL in a domain under the control of the person defining that request.  For
+		example, if the Beatles wanted to define a new <span class='fieldValue'>increase-speed</span> request type, they
+		could send a message like this:</p>
+		<pre>
+{
+   id: 6,
+   to: [{
+      user: 'ringo',
+      domain: 'beatles.org'
+   }],
+   from: {
+      user: 'john',
+      domain: 'beatles.org'
+   },
+   type: 'request',
+   request: 'http://beatles.org/braid/increase-speed'
+}
+</pre>
+		
+		<h3>code and message</h3>
+		<p>In <span class='fieldValue'>error</span> messages only, the responder explains the reason that they
+		could not fulfill the request by providing an error code, using standard HTTP-style error codes, and
+		a human-readable message.  For example, if someone receives a message whose request type is one they
+		do not understand, the can return a message like this:</p>
+				<pre>
+{
+   id: 6,
+   to: [{
+      user: 'john',
+      domain: 'beatles.org'
+   }],
+   from: {
+      user: 'ringo',
+      domain: 'beatles.org'
+   },
+   type: 'error',
+   request: 'http://beatles.org/braid/increase-volume',
+   error: 406,
+   message: 'This request type is not supported'
+}
+</pre>
+		
+		
+	</body>
+</html>

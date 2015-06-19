@@ -1,0 +1,43 @@
+body {
+	font-family: sans-serif;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 15px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	padding: 5px;
+	font-family: monospace;
+}
+
+.variable {
+	font-style: italic;
+	color: #aaa;
+}
+
+.fieldName {
+	font-style: bold;
+	color: #55f;
+	font-family: monospace;
+	font-size: 125%;
+}
+
+.fieldValue {
+	color: #aaf;
+	font-family: monospace;
+	font-size: 125%;
+}
+
+.enumList {
+	list-style-type: none;
+	padding: 5px 20px;
+}
+
+.enumHeading {
+	display: inline-block;
+	width: 80px;
+	color: #aaf;
+	font-family: monospace;
+	font-size: 125%;	
+}
