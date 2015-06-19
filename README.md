@@ -1,11 +1,11 @@
-##Braid Protocol
+## Braid Protocol
 This is a proposed specification for a federated system for offline/online/real-time collaboration.  
 
 It is intended to support a wide variety of implementors that can interoperate.  The protocol has
 not yet been offered to any standards body, but our intention is to make this protocol freely 
 available to all who want to participate and to standardize appropriately as that community grows.
 
-#Design Goals
+# Design Goals
 Collaboration applications today are increasingly dominated by proprietary client-server solutions.
 While 'cloud' has positive connotations for many people, it has the downside that you are sharing
 your private information with a cloud provider and are at the mercy of one provider.  Consider 
