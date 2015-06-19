@@ -65,15 +65,18 @@ To understand braid, a good place to start is with the messages.  All braid mess
 file exchanges and media streams) have a consistent structure.  They are all JSON-encoded 
 with UTF-8 character encoding.  All messages have this structure:
 
-` { id: <id>,
-    to: <recipient_array>,
-    from: <sender>,
-    type: <cast | request | reply | error>,
-    request:  <request type>,
-    code: <http-style error code>,
-    message: <http-style error message>,
-    data: <request-specific object>
-  }`
+```
+{ 
+   id: <id>,
+   to: <recipient_array>,
+   from: <sender>,
+   type: <cast | request | reply | error>,
+   request:  <request type>,
+   code: <http-style error code>,
+   message: <http-style error message>,
+   data: <request-specific object>
+}
+```
   
 Some of these fields will be absent depending on the scenario.
 
@@ -85,11 +88,13 @@ integer.
 The `to` field is an array of addresses.  The `from` field is an address.  Braid addresses are
 encoded as JSON objects with the following structure:
 
-`  { domain: <domain>,
-     user: <userid>,
-     resource:  <resource>
-   }`
-   
+```
+{ 
+   domain: <domain>,
+   user: <userid>,
+   resource:  <resource>
+}
+```   
 The `domain` field is an internet domain, e.g., "hivepoint.com".  The `user` field identifies a user
 with an identity in that domain, e.g., "kduffie".  The `resource` field identifies a specific 
 active session with that user.  These resources are ephemeral.  They only last as long as a user
